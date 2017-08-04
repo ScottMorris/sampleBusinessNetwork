@@ -1,0 +1,6 @@
+query selectAvailableProducts {
+  description: "Select all products that are available for sale"
+  statement:
+      SELECT org.example.asset.Product
+          WHERE (AvailableForSale==true)
+}

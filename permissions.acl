@@ -1,0 +1,108 @@
+/**
+ * Sample access control list.
+ */
+rule EverybodyCanReadEverything {
+    description: "Allow all participants read access to all resources"
+    participant: "org.example.participant.Person"
+    operation: READ
+    resource: "org.example.asset.*"
+    action: ALLOW
+}
+
+rule AssignedPeopleCanGenericallyCreateProduct{
+    description: "Allow all assigned participants to update product"
+    participant(p): "org.example.participant.Person"
+    operation: CREATE
+    resource: "org.example.asset.Product"
+    condition: (p.getFullyQualifiedType() === 'org.example.participant.ProductManager') 
+    action: ALLOW
+}
+
+rule AssignedPeopleCanCreateProduct {
+    description: "Allow particular assigned participants to create a new product"
+    participant(p): "org.example.participant.Person"
+    operation: ALL
+    resource: "org.example.transaction.ProductCreation"
+    condition: (p.getFullyQualifiedType() === 'org.example.participant.ProductManager') 
+    action: ALLOW
+}
+
+rule AssignedPeopleCanUpdateProduct {
+    description: "Allow all assigned participants to update product"
+    participant(p): "org.example.participant.Person"
+    operation: UPDATE
+    resource(r): "org.example.asset.Product"
+    condition: (r.ProductManager.getIdentifier() === p.getIdentifier() || r.MarketingManager.getIdentifier() === p.getIdentifier() || r.ShippingManager.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule AssignedPeopleCanAddNotes {
+    description: "Allow all assigned participants to add product notes"
+    participant(p): "org.example.participant.Person"
+    operation: ALL
+    resource(r): "org.example.transaction.ProductNote"
+    condition: (r.Product.ProductManager.getIdentifier() === p.getIdentifier()  || r.Product.MarketingManager.getIdentifier() === p.getIdentifier() || r.ShippingManager.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule AssignedPeopleCanApproveProduct {
+    description: "Allow particular assigned participants to approve/unapproval products"
+    participant(p): "org.example.participant.Person"
+    operation: ALL
+    resource(r): "org.example.transaction.ProductApproval"
+    condition: (r.Product.ProductManager.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule AssignedPeopleCanAssignPeopleToProduct {
+    description: "Allow particular assigned participants to assign other people ot the product"
+    participant(p): "org.example.participant.Person"
+    operation: ALL
+    resource(r): "org.example.transaction.ProductAssignment"
+    condition: (r.Product.ProductManager.getIdentifier() === p.getIdentifier()) 
+    action: ALLOW
+}
+
+rule AssignedPeopleCanUpdateProductDefinition {
+    description: "Allow particular assigned participants to update the product definition"
+    participant(p): "org.example.participant.Person"
+    operation: ALL
+    resource(r): "org.example.transaction.ProductDefinition"
+    condition: (r.Product.ProductManager.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule AssignedMarketingManagerCanSetPricing {
+    description: "Allow assigned marketing manager to set product pricing"
+    participant(p): "org.example.participant.MarketingManager"
+    operation: ALL
+    resource(r): "org.example.transaction.ProductPricing"
+    condition: (r.Product.MarketingManager.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule AssignedMarketingManagerCanUpdateProductMarketing {
+    description: "Allow assigned marketing manager to set product marketing info"
+    participant(p): "org.example.participant.MarketingManager"
+    operation: ALL
+    resource(r): "org.example.transaction.ProductMarketing"
+    condition: (r.Product.MarketingManager.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule AssignedShippingManagerCanUpdateShipmentInformation {
+    description: "Allow assigned marketing manager to set product marketing info"
+    participant(p): "org.example.participant.ShippingManager"
+    operation: ALL
+    resource(r): "org.example.transaction.ProductMarketing"
+    condition: (r.Product.ShippingManager.getIdentifier() === p.getIdentifier())
+    action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all access"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}

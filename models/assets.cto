@@ -1,0 +1,53 @@
+/**
+ * Sample business network definition.
+ */
+namespace org.example.asset
+import org.example.participant.*
+
+asset Product identified by Id {
+  o String Id
+
+  // Definitions
+  o String Name 
+  o String Description 
+  o DateTime CreatedDate 
+  o DateTime ExpiryDate 
+  o Boolean AvailableForSale default = false
+
+  // Product Management
+  --> ProductManager ProductManager optional
+  o Boolean ProductManagerApproved default = false
+  o Note[] Notes optional
+  o String Sku optional
+
+  // Marketing, Pricing
+  --> MarketingManager MarketingManager optional
+  o String MarketingMaterial optional
+  o Double UnitPrice optional
+  o String[] Tags optional
+
+  // Shipment
+  --> ShippingManager ShippingManager
+  o String DestinationAddress
+  o String DeliveryInstructions
+}
+
+// Supporting concepts
+enum ParameterType {
+  o Text
+  o Date
+  o Number
+}
+
+concept Note {
+  o DateTime EffectiveDate
+  o String Message
+  o String Author
+}
+
+// Events
+event ProductCreationEvent {}
+event ProductApprovalEvent {}
+event ProductAvailableForSaleEvent {}
+event ProductPricingEvent {}
+event ProductNotesEvent {}

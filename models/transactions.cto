@@ -1,0 +1,58 @@
+namespace org.example.transaction 
+import org.example.participant.ProductManager
+import org.example.participant.MarketingManager
+import org.example.participant.ShippingManager
+import org.example.asset.*
+
+transaction ProductCreation {
+  o String Name
+  o String Description
+  o DateTime CreatedDate 
+  o DateTime ExpiryDate 
+  o String Sku
+  --> ProductManager ProductManager }
+
+transaction ProductDefinition {
+  --> Product Product
+  o String Name
+  o String Description
+  o DateTime CreatedDate 
+  o DateTime ExpiryDate 
+  o String Sku
+}
+
+transaction ProductAssignment {
+  --> Product Product
+  --> ProductManager ProductManager optional
+  --> MarketingManager MarketingManager optional
+  --> ShippingManager ShippingManager optional
+}
+
+transaction ProductNote {
+  --> Product Product
+  o String Note
+}
+
+transaction ProductPricing {
+  --> Product Product
+  o Double UnitPrice
+  o String Reason
+}
+
+transaction ProductApproval {
+  --> Product Product
+  o Boolean IsApproved
+  o String Reason
+}
+
+transaction ProductMarketing {
+  --> Product Product
+  o String MarketingMaterial
+  o String[] Tags
+}
+
+transaction ProductShipment {
+  --> Product Product
+  o String DestinationAddress
+  o String DeliveryInstructions
+}

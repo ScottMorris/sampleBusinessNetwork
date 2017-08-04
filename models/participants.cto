@@ -1,0 +1,20 @@
+namespace org.example.participant
+
+// Participants
+abstract participant Person identified by Id {
+  o String Id
+  o String Name
+}
+
+abstract participant Manager extends Person {
+}
+
+participant ProductManager extends Manager {
+}
+
+participant MarketingManager extends Manager {
+}
+
+participant ShippingManager extends Manager {
+}
+
